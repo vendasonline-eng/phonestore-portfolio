@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PORTFÓLIO OFICIAL 2026 🔥 ATUALIZADO</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="tech-bg"></div>
+
+<div class="urgent-banner">🔥 ESTOQUE ATUALIZADO AGORA MESMO — PROMOÇÕES IMPERDÍVEIS! 🔥</div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <img src="images/logo.png" alt="PHONE STORE Logo">
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <h2>PORTFÓLIO OFICIAL 2026</h2>
+  <p>Tecnologia de ponta com os melhores preços da cidade! Smartphones, Tablets e Caixas de Som de qualidade premium.</p>
+
+  
+
+<section class="tabs-container">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="setCategory('all', this)">📱 TODOS</button>
+    <button class="tab-btn" onclick="setCategory('Smartphone', this)">📲 SMARTPHONES</button>
+    <button class="tab-btn" onclick="setCategory('Som', this)">🔊 CAIXAS DE SOM</button>
+    <button class="tab-btn" onclick="setCategory('Tablet', this)">🖥️ TABLETS</button>
+  </div>
+</section>
+
+<div class="filter-bar">
+  <input type="text" class="search-input" id="searchInput" placeholder="Busque por marca, modelo ou especificação..." oninput="renderProducts()">
+  <div class="brand-pill active" onclick="setBrand('all', this)">Todas</div>
+  <div class="brand-pill" onclick="setBrand('Samsung', this)">Samsung</div>
+  <div class="brand-pill" onclick="setBrand('Apple', this)">Apple</div>
+  <div class="brand-pill" onclick="setBrand('Xiaomi', this)">Xiaomi</div>
+  <div class="brand-pill" onclick="setBrand('JBL', this)">JBL</div>
+  <div class="brand-pill" onclick="setBrand('Amvox', this)">Amvox</div>
+</div>
+
+<section class="products-section" id="productsContainer"></section>
+
+<footer>
+  <div class="footer-logo">PHONE <span>STORE</span></div>
+  <p class="footer-text">Sua loja de confiança para tecnologia de ponta.</p>
+
+  <div class="help-box">
+    <h4>💡 Precisa de ajuda para escolher?</h4>
+    <p><strong>Nossos especialistas estão prontos para ajudar!</strong></p>
+    <a href="https://wa.me/5591991009240?text=Olá!%2C%20Vim%20pelo%20site%20e%20quero%20mais%20informacões%20sobre%20os%20produtos." class="btn-wa-large" target="_blank">
+      <i class="fab fa-whatsapp"></i> FALAR COM ESPECIALISTA
+    </a>
+  </div>
+</footer>
+
+<script src="products.js"></script>
+
+<script>
+let currentBrand = 'all';
+let currentCategory = 'all';
+
+const BRASIL_CARD = { label: 'BrasilCard', url: 'https://www.brasilcard.net/bca/lojista/login' };
+const ODRES = { label: 'OdresCred', url: 'https://vendas.odrescred.com.br/login' };
+const PAYJOY = { label: 'PayJoy', url: 'https://app.payjoy.com/merchant3/merchant-login' };
+const WATU = { label: 'Watu', url: 'https://br-simu.watu.com/#/login' };
+
+function setCategory(category, el) {
+  currentCategory = category;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderProducts();
+}
+
+function setBrand(brand, el) {
+  currentBrand = brand;
+  document.querySelectorAll('.brand-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderProducts();
+}
+
+function moneyBR(value) {
+  return Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function getFinanceButtons(product) {
+
+  if (
+    product.brand === 'Apple' ||
+    product.category === 'Tablet' ||
+    product.category === 'Som'
+  ) {
+    return [BRASIL_CARD];
+  }
+
+  if (product.brand === 'Samsung') {
+    return [BRASIL_CARD, ODRES, PAYJOY, WATU];
+  }
+
+  if (
+    product.brand === 'Tecno' ||
+    product.brand === 'Realme' ||
+    product.brand === 'Motorola' ||
+    product.brand === 'Xiaomi' ||
+    product.brand === 'Oppo' ||
+    product.brand === 'Infinix'||
+    product.brand === 'Honor' ||
+    product.brand === 'Itel' ||
+    product.brand === 'Positivo'
+  ) {
+    return [BRASIL_CARD, ODRES, PAYJOY];
+  }
+
+  return [BRASIL_CARD];
+}
+
+function renderProducts() {
+  const container = document.getElementById('productsContainer');
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  container.innerHTML = '';
+
+  if (typeof allProducts === 'undefined') {
+    container.innerHTML = `<p style="color:#aaa;padding:20px;">Erro ao carregar produtos.</p>`;
+    return;
+  }
+
+  const filtered = allProducts.filter(p => {
+    const matchCategory = currentCategory === 'all' || p.category === currentCategory;
+    const matchBrand = currentBrand === 'all' || p.brand === currentBrand;
+    const matchSearch =
+      (p.name || '').toLowerCase().includes(search) ||
+      (p.brand || '').toLowerCase().includes(search);
+
+    return matchCategory && matchBrand && matchSearch;
+  });
+
+  const brands = [...new Set(filtered.map(p => p.brand))];
+
+  brands.forEach(brand => {
+    const section = document.createElement('div');
+    section.className = 'brand-section';
+    section.innerHTML = `<div class="section-header"><h3>${brand}</h3></div>`;
+
+    const grid = document.createElement('div');
+    grid.className = 'products-grid';
+
+    filtered.filter(p => p.brand === brand).forEach(p => {
+
+      const badgeHtml = p.badge ? `<div class="badge">${p.badge}</div>` : '';
+
+      const priceCard = moneyBR(p.price);
+      const pricePix = moneyBR(p.pix);
+      const showCardPrice = p.pix < p.price;
+
+      const financeList = getFinanceButtons(p);
+
+      const financeButtonsHtml = financeList.map(f => `
+        <a href="${f.url}" target="_blank" class="btn-finance">
+          ${f.label}
+        </a>
+      `).join('');
+
+      grid.innerHTML += `
+        <div class="product-card">
+          ${badgeHtml}
+          <div class="card-img">
+            <img src="${p.img}" alt="${p.name}"
+              onerror="this.src='https://via.placeholder.com/200?text=PHONE+STORE'">
+          </div>
+
+          <div class="card-info">
+            <div class="card-brand">${p.brand}</div>
+            <div class="card-name">${p.name}</div>
+
+            <div class="price-block">
+              ${showCardPrice ? `<div class="price-card">${priceCard}</div>` : ''}
+              <div class="price-pix">${pricePix}</div>
+              <span class="price-label">À VISTA NO PIX</span>
+            </div>
+
+            <div class="finance-actions">
+              ${financeButtonsHtml}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', renderProducts);
+</script>
+
+</body>
+</html>
