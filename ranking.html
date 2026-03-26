@@ -21,15 +21,6 @@ body {
     border-bottom: 1px solid #222;
 }
 
-.btn {
-    background: #ffd700;
-    color: black;
-    padding: 8px 14px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
 .categorias {
     padding: 20px 30px;
 }
@@ -105,7 +96,7 @@ body {
 </div>
 
 <div class="funil-img" id="funilImg">
-    <img src="imagem_funil.png" alt="Funil de Vendas">
+    <img src="imagem_funil.png">
 </div>
 
 <div class="ranking" id="ranking"></div>
@@ -131,7 +122,6 @@ let dadosFunil = [];
 let tipoRanking = "faturado";
 let modo = "vendedores";
 
-
 fetch("https://opensheet.elk.sh/1oSBOi5ZeCtkVIuEfzUVB730BK1CsYAIfazJDxrH0wPA/Staging_vendedor")
 .then(r=>r.json())
 .then(data=>{
@@ -148,16 +138,9 @@ fetch("https://opensheet.elk.sh/1oSBOi5ZeCtkVIuEfzUVB730BK1CsYAIfazJDxrH0wPA/Sta
     renderVendedores(dadosVendedores.sort((a,b)=> b.faturado - a.faturado));
 });
 
-
 function carregarFunil(){
     modo = "funil";
-
     document.getElementById("funilImg").style.display = "block";
-
-    if(dadosFunil.length > 0){
-        renderFunil(dadosFunil);
-        return;
-    }
 
     fetch("https://opensheet.elk.sh/1vMDMsdPbvzItkJyoSeGoDG40fhGZ1HUe3z7QgC0eZ4g/Métricas")
     .then(r=>r.json())
@@ -166,11 +149,7 @@ function carregarFunil(){
             nome: item["LOJAS_PDV"],
             valor: parseBR(item["FATURADO"])
         }))
-        .filter(d => 
-            d.nome &&
-            d.valor > 0 &&
-            !d.nome.toLowerCase().includes("total")
-        )
+        .filter(d => d.nome && d.valor > 0)
         .sort((a,b)=> b.valor - a.valor);
 
         renderFunil(dadosFunil);
@@ -179,7 +158,6 @@ function carregarFunil(){
 
 function renderVendedores(dados){
     modo = "vendedores";
-
     document.getElementById("funilImg").style.display = "none";
 
     const ranking = document.getElementById("ranking");
@@ -192,7 +170,7 @@ function renderVendedores(dados){
 
         ranking.innerHTML += `
         <div class="item">
-            <div>${i+1} - ${d.nome}</div>
+            <div>${i+1} - ${d.nome.toUpperCase()}</div>
             <div class="barra">
                 <div class="progresso" style="width:${percent}%"></div>
             </div>
@@ -212,7 +190,7 @@ function renderFunil(dados){
 
         ranking.innerHTML += `
         <div class="item">
-            <div>${i+1} -  ${d.nome}</div>
+            <div>${i+1} - ${d.nome.toUpperCase()}</div>
             <div class="barra">
                 <div class="progresso" style="width:${percent}%"></div>
             </div>
@@ -221,13 +199,10 @@ function renderFunil(dados){
     });
 }
 
-
 function filtrar(tipo){
     tipoRanking = tipo;
     renderVendedores([...dadosVendedores].sort((a,b)=> b[tipo]-a[tipo]));
 }
-
-
 
 document.getElementById("search").addEventListener("keyup", function(){
     const v = this.value.toLowerCase();
