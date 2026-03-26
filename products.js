@@ -168,3 +168,4 @@ const allProducts = [
   { category: 'Tablet', brand: 'Vision', name: 'Vision Tab 7 Minions 64GB/3RAM', price: 699.99, pix: 699.99, img:'images/Vision_Tab_7_minions 64GB.webp', badge: '' },
 
 ];
+

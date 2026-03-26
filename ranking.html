@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Ranking Phone Store</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial;
+    background: #0b0b0b;
+    color: white;
+}
+
+.header {
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #222;
+}
+
+.btn {
+    background: #ffd700;
+    color: black;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.categorias {
+    padding: 20px 30px;
+}
+
+.cat-btn {
+    margin-right:10px;
+    padding:6px 10px;
+    border-radius:6px;
+    background:#222;
+    cursor:pointer;
+    display:inline-block;
+}
+
+.search {
+    padding: 0 30px 10px;
+}
+
+.search input {
+    width:100%;
+    padding:10px;
+    border-radius:6px;
+    border:none;
+}
+
+.funil-img {
+    display:none;
+    text-align:center;
+    padding:10px;
+}
+
+.funil-img img {
+    max-width:250px;
+}
+
+.ranking {
+    padding: 10px 30px 40px;
+}
+
+.item {
+    margin-bottom: 15px;
+}
+
+.barra {
+    height: 8px;
+    background:#222;
+    border-radius:5px;
+}
+
+.progresso {
+    height:100%;
+    background:#ffd700;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>🏆 Ranking Geral</h2>
+</div>
+
+<div class="categorias">
+    <span class="cat-btn" onclick="filtrar('faturado')">💰 Geral</span>
+    <span class="cat-btn" onclick="filtrar('acessorios')">📦 Acessórios</span>
+    <span class="cat-btn" onclick="filtrar('aparelhos')">📱 Aparelhos</span>
+    <span class="cat-btn" onclick="filtrar('caixa')">🔊 Caixa</span>
+    <span class="cat-btn" onclick="filtrar('protect')">🛡 Protect</span>
+    <span class="cat-btn" onclick="carregarFunil()">🔥 Funil</span>
+</div>
+
+<div class="search">
+    <input type="text" id="search" placeholder="Buscar...">
+</div>
+
+<div class="funil-img" id="funilImg">
+    <img src="imagem_funil.png" alt="Funil de Vendas">
+</div>
+
+<div class="ranking" id="ranking"></div>
+
+<script>
+
+function parseBR(v){
+    if(!v) return 0;
+    return Number(
+        v.toString()
+        .replace(/[^\d,.-]/g, "")
+        .replace(/\./g, "")
+        .replace(",", ".")
+    ) || 0;
+}
+
+function money(v){
+    return v.toLocaleString('pt-BR',{style:'currency', currency:'BRL'});
+}
+
+let dadosVendedores = [];
+let dadosFunil = [];
+let tipoRanking = "faturado";
+let modo = "vendedores";
+
+
+fetch("https://opensheet.elk.sh/1oSBOi5ZeCtkVIuEfzUVB730BK1CsYAIfazJDxrH0wPA/Staging_vendedor")
+.then(r=>r.json())
+.then(data=>{
+    dadosVendedores = data.map(item => ({
+        nome: item["Nome Fantasia"],
+        faturado: parseBR(item["FATURADO"]),
+        acessorios: parseBR(item["ACESSORIOS_VALOR"]),
+        aparelhos: parseBR(item["APARELHOS_VALOR"]),
+        caixa: parseBR(item["CAIXA_SOM_VALOR"]),
+        protect: parseBR(item["PROTECT_VALOR"]),
+    }))
+    .filter(d => d.faturado > 0);
+
+    renderVendedores(dadosVendedores.sort((a,b)=> b.faturado - a.faturado));
+});
+
+
+function carregarFunil(){
+    modo = "funil";
+
+    document.getElementById("funilImg").style.display = "block";
+
+    if(dadosFunil.length > 0){
+        renderFunil(dadosFunil);
+        return;
+    }
+
+    fetch("https://opensheet.elk.sh/1vMDMsdPbvzItkJyoSeGoDG40fhGZ1HUe3z7QgC0eZ4g/Métricas")
+    .then(r=>r.json())
+    .then(data=>{
+        dadosFunil = data.map(item => ({
+            nome: item["LOJAS_PDV"],
+            valor: parseBR(item["FATURADO"])
+        }))
+        .filter(d => 
+            d.nome &&
+            d.valor > 0 &&
+            !d.nome.toLowerCase().includes("total")
+        )
+        .sort((a,b)=> b.valor - a.valor);
+
+        renderFunil(dadosFunil);
+    });
+}
+
+function renderVendedores(dados){
+    modo = "vendedores";
+
+    document.getElementById("funilImg").style.display = "none";
+
+    const ranking = document.getElementById("ranking");
+    ranking.innerHTML = "";
+
+    const max = dados[0]?.[tipoRanking] || 1;
+
+    dados.forEach((d,i)=>{
+        const percent = (d[tipoRanking] / max) * 100;
+
+        ranking.innerHTML += `
+        <div class="item">
+            <div>${i+1} - ${d.nome}</div>
+            <div class="barra">
+                <div class="progresso" style="width:${percent}%"></div>
+            </div>
+            <small>${money(d[tipoRanking])}</small>
+        </div>`;
+    });
+}
+
+function renderFunil(dados){
+    const ranking = document.getElementById("ranking");
+    ranking.innerHTML = "";
+
+    const max = dados[0]?.valor || 1;
+
+    dados.forEach((d,i)=>{
+        const percent = (d.valor / max) * 100;
+
+        ranking.innerHTML += `
+        <div class="item">
+            <div>${i+1} -  ${d.nome}</div>
+            <div class="barra">
+                <div class="progresso" style="width:${percent}%"></div>
+            </div>
+            <small>${money(d.valor)}</small>
+        </div>`;
+    });
+}
+
+
+function filtrar(tipo){
+    tipoRanking = tipo;
+    renderVendedores([...dadosVendedores].sort((a,b)=> b[tipo]-a[tipo]));
+}
+
+
+
+document.getElementById("search").addEventListener("keyup", function(){
+    const v = this.value.toLowerCase();
+
+    if(modo === "funil"){
+        renderFunil(dadosFunil.filter(d => d.nome.toLowerCase().includes(v)));
+    } else {
+        renderVendedores(dadosVendedores.filter(d => d.nome.toLowerCase().includes(v)));
+    }
+});
+
+</script>
+
+</body>
+</html>

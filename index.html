@@ -24,16 +24,25 @@
       <img src="images/logo.png" alt="PHONE STORE Logo">
     </div>
   </div>
-
-  <button class="btn-changelog" onclick="openChangelog()">Ver mudanças</button>
 </div>
 </header>
+ <a href="ranking.html" style="
+  display:inline-block;
+  margin:20px;
+  padding:10px 20px;
+  background:#22c55e;
+  color:#000;
+  font-weight:700;
+  border-radius:8px;
+  text-decoration:none;
+">
+  🏆 Ver Ranking Completo
+</a>
 
 <section class="hero">
   <h2>PORTFÓLIO OFICIAL 2026</h2>
-  <p>Tecnologia de ponta com os melhores preços da cidade! Smartphones, Tablets e Caixas de Som de qualidade premium.</p>
+  <p>Tecnologia de ponta com os melhores preços da cidade!</p>
 
-  
 
 <section class="tabs-container">
   <div class="tabs">
@@ -45,51 +54,18 @@
 </section>
 
 <div class="filter-bar">
-  <input type="text" class="search-input" id="searchInput" placeholder="Busque por marca, modelo ou especificação..." oninput="renderProducts()">
-  <div class="brand-pill active" onclick="setBrand('all', this)">Todas</div>
-  <div class="brand-pill" onclick="setBrand('Samsung', this)">Samsung</div>
-  <div class="brand-pill" onclick="setBrand('Apple', this)">Apple</div>
-  <div class="brand-pill" onclick="setBrand('Xiaomi', this)">Xiaomi</div>
-  <div class="brand-pill" onclick="setBrand('JBL', this)">JBL</div>
-  <div class="brand-pill" onclick="setBrand('Amvox', this)">Amvox</div>
-  <div class="brand-pill" onclick="setBrand('Honor', this)">Honor</div>
-  <div class="brand-pill" onclick="setBrand('Infinix', this)">Infinix</div>
-  <div class="brand-pill" onclick="setBrand('Itel', this)">Itel</div>
+  <input type="text" class="search-input" id="searchInput" placeholder="Busque..." oninput="renderProducts()">
 </div>
 
-<div style="margin: left 10px;;" class="filter-tools">
-  <select id="sortSelect" class="sort-select" onchange="setSort(this.value)">
-    <option value="featured">Ordenar: Destaques</option>
-    <option value="pix_asc">PIX: Menor → Maior</option>
-    <option value="pix_desc">PIX: Maior → Menor</option>
-    <option value="discount_desc">Maior desconto (Cartão - PIX)</option>
-    <option value="name_asc">Nome (A → Z)</option>
-  </select>
-
-  <select id="priceRangeSelect" class="sort-select" onchange="setPriceRange(this.value)">
-    <option value="all">Preço PIX: Todos</option>
-    <option value="0-799">Até R$ 799</option>
-    <option value="0-1199">Até R$ 1.199</option>
-    <option value="0-1699">Até R$ 1.699</option>
-    <option value="0-2000">Até R$ 2.000</option>
-    <option value="2000+">Acima de R$ 2.000</option>
-  </select>
+<div class="filter-tools">
 </div>
+
+
 
 <section class="products-section" id="productsContainer"></section>
 
-<footer>
-  <div class="footer-logo">PHONE <span>STORE</span></div>
-  <p class="footer-text">Sua loja de confiança para tecnologia de ponta.</p>
+<footer></footer>
 
-  <div class="help-box">
-    <h4>💡 Precisa de ajuda para escolher?</h4>
-    <p><strong>Nossos especialistas estão prontos para ajudar!</strong></p>
-    <a href="https://wa.me/5591991009240?text=Olá!%2C%20Vim%20pelo%20site%20e%20quero%20mais%20informacões%20sobre%20os%20produtos." class="btn-wa-large" target="_blank">
-      <i class="fab fa-whatsapp"></i> FALAR COM ESPECIALISTA
-    </a>
-  </div>
-</footer>
 
 <script src="products.js"></script>
 
