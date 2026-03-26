@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <title>Ranking Phone Store</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
-
 <style>
 body {
     margin: 0;
@@ -116,22 +114,17 @@ body {
 
 function parseBR(v){
     if(!v) return 0;
-    return Number(
-        v.toString()
-        .replace(/[^\d,.-]/g, "")
-        .replace(/\./g, "")
-        .replace(",", ".")
-    ) || 0;
+    return Number(v.toString().replace(/[^\d,.-]/g,"").replace(/\./g,"").replace(",","."))
 }
 
 function money(v){
-    return v.toLocaleString('pt-BR',{style:'currency', currency:'BRL'});
+    return v.toLocaleString('pt-BR',{style:'currency', currency:'BRL'})
 }
 
-let dadosVendedores = [];
-let dadosFunil = [];
-let tipoRanking = "faturado";
-let modo = "vendedores";
+let dadosVendedores = []
+let dadosFunil = []
+let tipoRanking = "faturado"
+let modo = "vendedores"
 
 fetch("https://opensheet.elk.sh/1oSBOi5ZeCtkVIuEfzUVB730BK1CsYAIfazJDxrH0wPA/Staging_vendedor")
 .then(r=>r.json())
@@ -144,14 +137,20 @@ fetch("https://opensheet.elk.sh/1oSBOi5ZeCtkVIuEfzUVB730BK1CsYAIfazJDxrH0wPA/Sta
         caixa: parseBR(item["CAIXA_SOM_VALOR"]),
         protect: parseBR(item["PROTECT_VALOR"]),
     }))
-    .filter(d => d.faturado > 0);
+    .filter(d => d.faturado > 0)
 
-    renderVendedores(dadosVendedores.sort((a,b)=> b.faturado - a.faturado));
-});
+    ordenar()
+})
+
+function ordenar(){
+    dadosVendedores.sort((a,b)=> b[tipoRanking] - a[tipoRanking])
+    dadosVendedores.forEach((d,i)=> d.pos = i+1)
+    renderVendedores(dadosVendedores)
+}
 
 function carregarFunil(){
-    modo = "funil";
-    document.getElementById("funilImg").style.display = "block";
+    modo = "funil"
+    document.getElementById("funilImg").style.display = "block"
 
     fetch("https://opensheet.elk.sh/1vMDMsdPbvzItkJyoSeGoDG40fhGZ1HUe3z7QgC0eZ4g/Métricas")
     .then(r=>r.json())
@@ -161,69 +160,71 @@ function carregarFunil(){
             valor: parseBR(item["FATURADO"])
         }))
         .filter(d => d.nome && d.valor > 0)
-        .sort((a,b)=> b.valor - a.valor);
 
-        renderFunil(dadosFunil);
-    });
+        dadosFunil.sort((a,b)=> b.valor - a.valor)
+        dadosFunil.forEach((d,i)=> d.pos = i+1)
+
+        renderFunil(dadosFunil)
+    })
 }
 
 function renderVendedores(dados){
-    modo = "vendedores";
-    document.getElementById("funilImg").style.display = "none";
+    modo = "vendedores"
+    document.getElementById("funilImg").style.display = "none"
 
-    const ranking = document.getElementById("ranking");
-    ranking.innerHTML = "";
+    const ranking = document.getElementById("ranking")
+    ranking.innerHTML = ""
 
-    const max = dados[0]?.[tipoRanking] || 1;
+    const max = dadosVendedores[0]?.[tipoRanking] || 1
 
-    dados.forEach((d,i)=>{
-        const percent = (d[tipoRanking] / max) * 100;
+    dados.forEach(d=>{
+        const percent = (d[tipoRanking] / max) * 100
 
         ranking.innerHTML += `
         <div class="item">
-            <div>${i+1} - ${d.nome.toUpperCase()}</div>
+            <div>${d.pos} - ${d.nome.toUpperCase()}</div>
             <div class="barra">
                 <div class="progresso" style="width:${percent}%"></div>
             </div>
             <small>${money(d[tipoRanking])}</small>
-        </div>`;
-    });
+        </div>`
+    })
 }
 
 function renderFunil(dados){
-    const ranking = document.getElementById("ranking");
-    ranking.innerHTML = "";
+    const ranking = document.getElementById("ranking")
+    ranking.innerHTML = ""
 
-    const max = dados[0]?.valor || 1;
+    const max = dadosFunil[0]?.valor || 1
 
-    dados.forEach((d,i)=>{
-        const percent = (d.valor / max) * 100;
+    dados.forEach(d=>{
+        const percent = (d.valor / max) * 100
 
         ranking.innerHTML += `
         <div class="item">
-            <div>${i+1} - ${d.nome.toUpperCase()}</div>
+            <div>${d.pos} - ${d.nome.toUpperCase()}</div>
             <div class="barra">
                 <div class="progresso" style="width:${percent}%"></div>
             </div>
             <small>${money(d.valor)}</small>
-        </div>`;
-    });
+        </div>`
+    })
 }
 
 function filtrar(tipo){
-    tipoRanking = tipo;
-    renderVendedores([...dadosVendedores].sort((a,b)=> b[tipo]-a[tipo]));
+    tipoRanking = tipo
+    ordenar()
 }
 
 document.getElementById("search").addEventListener("keyup", function(){
-    const v = this.value.toLowerCase();
+    const v = this.value.toLowerCase()
 
     if(modo === "funil"){
-        renderFunil(dadosFunil.filter(d => d.nome.toLowerCase().includes(v)));
+        renderFunil(dadosFunil.filter(d => d.nome.toLowerCase().includes(v)))
     } else {
-        renderVendedores(dadosVendedores.filter(d => d.nome.toLowerCase().includes(v)));
+        renderVendedores(dadosVendedores.filter(d => d.nome.toLowerCase().includes(v)))
     }
-});
+})
 
 </script>
 
