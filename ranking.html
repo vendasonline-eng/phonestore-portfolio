@@ -73,25 +73,12 @@ body {
     transition: width 1.2s ease;
 }
 .valor { margin-top:5px; font-size:14px; }
-
-.logo {
-    font-size: 1.6rem;
-    font-weight: 900;    
-    text-transform: uppercase;
-    letter-spacing: -1px;
-        color: #ffffff;
-}
-
-.logo span {
-    color: #f2c029;
-}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-    <div class="logo">PHONE<span>STORE</span></div>
     <h2>🏆 Ranking Geral</h2>
     <a href="index.html" class="btn">Voltar</a>
 </div>
@@ -100,8 +87,7 @@ body {
     <span class="cat-btn" onclick="mostrarVendedores()">💰 Geral</span>
     <span class="cat-btn" onclick="filtrar('acessorios')">📦 Acessórios</span>
     <span class="cat-btn" onclick="filtrar('aparelhos')">📱 Aparelhos</span>
-    <span class="cat-btn" onclick="filtrar('caixa')">🔊 Caixa</span>
-    <span class="cat-btn" onclick="filtrar('jbl')">🔊 JBL</span>
+    <span class="cat-btn" onclick="filtrar('audio')">🎧 Som</span>
     <span class="cat-btn" onclick="filtrar('protect')">🛡 Protect</span>
     <span class="cat-btn" onclick="carregarFunil()">🔥 Funil</span>
 </div>
@@ -135,15 +121,22 @@ let modo = "vendedores"
 fetch("https://opensheet.elk.sh/1Sz4W_66JfV1E0On0tOJAQmIXGvTd5IZ8Vdm1wTVxZfI/VENDEDORES_TOTAIS")
 .then(r=>r.json())
 .then(data=>{
-    dadosVendedores = data.map(item => ({
-        nome: item["Nome Fantasia"],
-        faturado: parseBR(item["FATURADO"]),
-        acessorios: parseBR(item["ACESSORIOS_VALOR"]),
-        aparelhos: parseBR(item["APARELHOS_VALOR"]),
-        caixa: parseBR(item["CAIXA_SOM_VALOR"]),
-        jbl: parseBR(item["CAIXA_JBL"]), 
-        protect: parseBR(item["PROTECT_VALOR"]),
-    }))
+    dadosVendedores = data.map(item => {
+
+        const caixa = parseBR(item["CAIXA_SOM_VALOR"])
+        const jbl = parseBR(item["CAIXA_JBL"])
+
+        return {
+            nome: item["Nome Fantasia"],
+            faturado: parseBR(item["FATURADO"]),
+            acessorios: parseBR(item["ACESSORIOS_VALOR"]),
+            aparelhos: parseBR(item["APARELHOS_VALOR"]),
+            caixa: caixa,
+            jbl: jbl,
+            audio: caixa + jbl, 
+            protect: parseBR(item["PROTECT_VALOR"]),
+        }
+    })
     .filter(d => d.faturado > 0)
 
     ordenar()
