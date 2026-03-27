@@ -119,8 +119,7 @@ let dadosFunil = []
 let tipoRanking = "faturado"
 let modo = "vendedores"
 
-fetch("https://opensheet.elk.sh/1oSBOi5ZeCtkVIuEfzUVB730BK1CsYAIfazJDxrH0wPA/Staging_vendedor")
-.then(r=>r.json())
+fetch("https://opensheet.elk.sh/1Sz4W_66JfV1E0On0tOJAQmIXGvTd5IZ8Vdm1wTVxZfI/VENDEDORES_TOTAIS").then(r=>r.json())
 .then(data=>{
     dadosVendedores = data.map(item => ({
         nome: item["Nome Fantasia"],
