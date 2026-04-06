@@ -15,7 +15,7 @@ const allProducts = [
   { category: 'Smartphone', brand: 'Samsung', name: 'Galaxy A17 4G 128GB/4RAM', price: 1599.99, pix: 1599.99, img: 'images/galaxy a17.webp', badge: '' },
   { category: 'Smartphone', brand: 'Samsung', name: 'Galaxy A16 128GB/4RAM', price: 1499.99, pix: 1499.99, img: 'images/samsung_a16_5g.jpg', badge: '⬇️ BAIXOU 🔥🔥' },
   { category: 'Smartphone', brand: 'Samsung', name: 'Galaxy A07 128GB/4RAM', price: 1199.99, pix: 1199.99, img: 'images/samsung_a07.jpg', badge: '' },
-  { category: 'Smartphone', brand: 'Samsung', name: 'Galaxy A06 128GB/4RAM', price: 899.99, pix: 799.99, img: 'images/samsung_a06.jpg', badge: '🔥🔥🔥 OFERTA PIX' },
+  { category: 'Smartphone', brand: 'Samsung', name: 'Galaxy A06 128GB/4RAM', price: 999.99, pix: 799.99, img: 'images/samsung_a06.jpg', badge: '🔥🔥🔥 OFERTA PIX' },
 
   // =========================
   // APPLE
