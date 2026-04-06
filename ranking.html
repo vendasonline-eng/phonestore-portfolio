@@ -202,7 +202,7 @@ function updateDisplay() {
         <div class="rank-item">
             <div class="pos-badge">${i+1}º</div>
             <div class="vendedor-info">
-                <div>${d.nome}</div>
+                <div>${(d.nome || '').toUpperCase()}</div>
                 <div class="progress-bg">
                     <div class="progress-fill" style="width:${perc}%"></div>
                 </div>
