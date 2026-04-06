@@ -2,262 +2,241 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Ranking Phone Store</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phone Store ranking</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
+:root {
+    --primary: #FFD700;
+    --primary-glow: rgba(255, 215, 0, 0.3);
+    --bg: #050505;
+    --card: rgba(20, 20, 25, 0.7);
+    --border: rgba(255, 255, 255, 0.08);
+    --up: #00ff88;
+}
+
 body {
     margin: 0;
-    font-family: 'Segoe UI', Arial;
-    background: linear-gradient(180deg, #0b0b0b, #111);
+    font-family: 'Montserrat', sans-serif;
+    background: radial-gradient(circle at top right, #0a0a15, #050505);
     color: white;
 }
+
 .header {
-    padding: 20px 30px;
+    padding: 25px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #222;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
 }
-.btn {
-    background: #ffd700;
-    color: black;
-    padding: 8px 14px;
-    border-radius: 6px;
+
+.header h2 {
+    margin: 0;
+    font-weight: 900;
+}
+
+.header span { color: var(--primary); }
+
+.btn-back {
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 10px 20px;
+    border-radius: 50px;
     text-decoration: none;
+}
+
+.container { padding: 30px; }
+
+.filter-bar {
+    display: flex;
+    justify-content: space-between;
+    background: var(--card);
+    padding: 15px 30px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+}
+
+.cat-group { display: flex; gap: 10px; }
+
+.cat-btn {
+    background: #151515;
+    padding: 10px 18px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.cat-btn.active {
+    background: var(--primary);
+    color: black;
+}
+
+.search-input {
+    background: #000;
+    border: 1px solid #333;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+}
+
+.rank-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 18px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.pos-badge {
+    width: 50px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.vendedor-info { flex: 1; }
+
+.progress-bg {
+    height: 6px;
+    background: #111;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary);
+}
+
+.val-total {
+    color: var(--up);
     font-weight: bold;
 }
-.categorias { padding: 20px 30px; }
-.cat-btn {
-    margin-right:10px;
-    padding:8px 12px;
-    border-radius:8px;
-    background:#1a1a1a;
-    cursor:pointer;
-    transition:0.2s;
-}
-.cat-btn:hover { background:#ffd700; color:black; }
-.search { padding: 0 30px 10px; }
-.search input {
-    width:100%;
-    padding:12px;
-    border-radius:8px;
-    border:none;
-    background:#1a1a1a;
-    color:white;
-}
-.funil-img { display:none; text-align:center; padding:10px; }
-.funil-img img { max-width:250px; }
-.ranking { padding: 10px 30px 40px; }
-.item {
-    margin-bottom: 15px;
-    padding:12px;
-    border-radius:10px;
-    background:#141414;
-    transition:0.3s;
-}
-.item:hover { transform: scale(1.01); }
-.top1 { border:1px solid gold; box-shadow: 0 0 10px gold; }
-.top2 { border:1px solid silver; }
-.top3 { border:1px solid #cd7f32; }
-.posicao { font-weight:bold; margin-bottom:5px; }
-.barra {
-    height: 10px;
-    background:#222;
-    border-radius:5px;
-    overflow:hidden;
-}
-.progresso {
-    height:100%;
-    background: linear-gradient(90deg,#ffd700,#ffae00);
-    width:0%;
-    transition: width 1.2s ease;
-}
-.valor { margin-top:5px; font-size:14px; }
 </style>
 </head>
 
 <body>
 
 <div class="header">
-    <h2>🏆 Ranking Geral</h2>
-    <a href="index.html" class="btn">Voltar</a>
+<h2>🏆 RANKING <span>VENDAS</span></h2>
+<a href="index.html" class="btn-back">Sair</a>
 </div>
 
-<div class="categorias">
-    <span class="cat-btn" onclick="mostrarVendedores()">💰 Geral</span>
-    <span class="cat-btn" onclick="filtrar('acessorios')">📦 Acessórios</span>
-    <span class="cat-btn" onclick="filtrar('aparelhos')">📱 Aparelhos</span>
-    <span class="cat-btn" onclick="filtrar('audio')">🎧 Som</span>
-    <span class="cat-btn" onclick="filtrar('protect')">🛡 Protect</span>
-    <span class="cat-btn" onclick="carregarFunil()">🔥 Funil</span>
+<div class="container">
+
+<div class="filter-bar">
+    <div class="cat-group">
+        <div class="cat-btn active" onclick="setRanking('faturado', this)">💰 Geral</div>
+        <div class="cat-btn" onclick="setRanking('acessorios', this)">📦 Acessórios</div>
+        <div class="cat-btn" onclick="setRanking('aparelhos', this)">📱 Aparelhos</div>
+        <div class="cat-btn" onclick="setRanking('audio', this)">🎧 Som</div>
+        <div class="cat-btn" onclick="setRanking('protect', this)">🛡 Protect</div>
+        <div class="cat-btn" onclick="loadFunilLojas(this)">🏠 Funil Lojas</div>
+    </div>
+
+    <input type="text" id="searchInput" class="search-input" placeholder="Buscar...">
 </div>
 
-<div class="search">
-    <input type="text" id="search" placeholder="Buscar...">
-</div>
+<div id="rankingList"></div>
 
-<div class="funil-img" id="funilImg">
-    <img src="imagem_funil.png">
 </div>
-
-<div class="ranking" id="ranking"></div>
 
 <script>
+let vendedoresRaw = [];
+let metricasRaw = [];
+let currentTipo = "faturado";
+let mode = "vendedores";
 
-function parseBR(v){
-    if(!v) return 0;
-    return Number(v.toString().replace(/[^\d,.-]/g,"").replace(/\./g,"").replace(",","."))
-}
+const parseVal = v => !v ? 0 : Number(v.toString().replace(/[^\d,.-]/g,"").replace(/\./g,"").replace(",","."))
+const formatMoeda = v => v.toLocaleString('pt-BR',{style:'currency', currency:'BRL'})
 
-function money(v){
-    return v.toLocaleString('pt-BR',{style:'currency', currency:'BRL'})
-}
-
-let dadosVendedores = []
-let dadosFunil = []
-let tipoRanking = "faturado"
-let modo = "vendedores"
-
+// VENDEDORES
 fetch("https://opensheet.elk.sh/1Sz4W_66JfV1E0On0tOJAQmIXGvTd5IZ8Vdm1wTVxZfI/VENDEDORES_TOTAIS")
-.then(r=>r.json())
-.then(data=>{
-    dadosVendedores = data.map(item => {
+.then(r => r.json())
+.then(data => {
+    vendedoresRaw = data.map((item, index) => ({
+        nome: item["Nome Fantasia"],
+        faturado: parseVal(item["FATURADO"]),
+        acessorios: parseVal(item["ACESSORIOS_VALOR"]),
+        aparelhos: parseVal(item["APARELHOS_VALOR"]),
+        audio: parseVal(item["CAIXA_SOM_VALOR"]) + parseVal(item["CAIXA_JBL"]),
+        protect: parseVal(item["PROTECT_VALOR"]),
+        prevPos: index + 1
+    })).filter(v => v.faturado > 0);
 
-        const caixa = parseBR(item["CAIXA_SOM_VALOR"])
-        const jbl = parseBR(item["CAIXA_JBL"])
+    updateDisplay();
+});
 
-        return {
-            nome: item["Nome Fantasia"],
-            faturado: parseBR(item["FATURADO"]),
-            acessorios: parseBR(item["ACESSORIOS_VALOR"]),
-            aparelhos: parseBR(item["APARELHOS_VALOR"]),
-            caixa: caixa,
-            jbl: jbl,
-            audio: caixa + jbl, 
-            protect: parseBR(item["PROTECT_VALOR"]),
-        }
-    })
-    .filter(d => d.faturado > 0)
+// LOJAS (FUNIL)
+fetch("https://opensheet.elk.sh/1vMDMsdPbvzItkJyoSeGoDG40fhGZ1HUe3z7QgC0eZ4g/Métricas")
+.then(r => r.json())
+.then(data => {
+    metricasRaw = data.map(m => ({
+        nome: m["LOJAS_PDV"],
+        faturado: parseVal(m["FATURADO"])
+    }));
+});
 
-    ordenar()
-})
+function updateDisplay() {
+    const list = document.getElementById("rankingList");
+    list.innerHTML = "";
 
-function ordenar(){
-    if(!dadosVendedores.length) return
+    let dados = mode === "vendedores" ? [...vendedoresRaw] : [...metricasRaw];
 
-    dadosVendedores.sort((a,b)=> (b[tipoRanking] || 0) - (a[tipoRanking] || 0))
-    dadosVendedores.forEach((d,i)=> d.pos = i+1)
-    renderVendedores(dadosVendedores)
-}
+    dados.sort((a,b) => (b[currentTipo] || 0) - (a[currentTipo] || 0));
 
-function mostrarVendedores(){
-    modo = "vendedores"
-    tipoRanking = "faturado"
-    document.getElementById("funilImg").style.display = "none"
-    ordenar()
-}
+    const max = Math.max(...dados.map(d => d[currentTipo]), 1);
 
-function carregarFunil(){
-    modo = "funil"
-    document.getElementById("funilImg").style.display = "block"
+    dados.forEach((d,i) => {
+        const perc = (d[currentTipo]/max)*100;
 
-    fetch("https://opensheet.elk.sh/1vMDMsdPbvzItkJyoSeGoDG40fhGZ1HUe3z7QgC0eZ4g/Métricas")
-    .then(r=>r.json())
-    .then(data=>{
-        dadosFunil = data.map(item => ({
-            nome: item["LOJAS_PDV"],
-            valor: parseBR(item["FATURADO"])
-        }))
-        .filter(d => d.nome && d.valor > 0)
-
-        dadosFunil.sort((a,b)=> b.valor - a.valor)
-        dadosFunil.forEach((d,i)=> d.pos = i+1)
-
-        renderFunil(dadosFunil)
-    })
-}
-
-function medalha(pos){
-    if(pos===1) return "🥇"
-    if(pos===2) return "🥈"
-    if(pos===3) return "🥉"
-    return pos
-}
-
-function classeTop(pos){
-    if(pos===1) return "item top1"
-    if(pos===2) return "item top2"
-    if(pos===3) return "item top3"
-    return "item"
-}
-
-function renderVendedores(dados){
-    const ranking = document.getElementById("ranking")
-    ranking.innerHTML = ""
-
-    if(!dados.length){
-        ranking.innerHTML = "<p style='text-align:center'>Nenhum resultado</p>"
-        return
-    }
-
-    const max = Math.max(...dados.map(d => d[tipoRanking] || 0), 1)
-
-    dados.forEach(d=>{
-        const percent = (d[tipoRanking] / max) * 100
-
-        ranking.innerHTML += `
-        <div class="${classeTop(d.pos)}">
-            <div class="posicao">${medalha(d.pos)} - ${d.nome?.toUpperCase()}</div>
-            <div class="barra">
-                <div class="progresso" style="width:${percent}%"></div>
+        list.innerHTML += `
+        <div class="rank-item">
+            <div class="pos-badge">${i+1}º</div>
+            <div class="vendedor-info">
+                <div>${d.nome}</div>
+                <div class="progress-bg">
+                    <div class="progress-fill" style="width:${perc}%"></div>
+                </div>
             </div>
-            <div class="valor">${money(d[tipoRanking] || 0)}</div>
-        </div>`
-    })
+            <div class="val-total">${formatMoeda(d[currentTipo])}</div>
+        </div>`;
+    });
 }
 
-function renderFunil(dados){
-    const ranking = document.getElementById("ranking")
-    ranking.innerHTML = ""
-
-    if(!dados.length){
-        ranking.innerHTML = "<p style='text-align:center'>Nenhum resultado</p>"
-        return
-    }
-
-    const max = Math.max(...dados.map(d => d.valor || 0), 1)
-
-    dados.forEach(d=>{
-        const percent = (d.valor / max) * 100
-
-        ranking.innerHTML += `
-        <div class="${classeTop(d.pos)}">
-            <div class="posicao">${medalha(d.pos)} - ${d.nome?.toUpperCase()}</div>
-            <div class="barra">
-                <div class="progresso" style="width:${percent}%"></div>
-            </div>
-            <div class="valor">${money(d.valor || 0)}</div>
-        </div>`
-    })
+function setRanking(tipo, btn){
+    mode = "vendedores";
+    currentTipo = tipo;
+    toggle(btn);
+    updateDisplay();
 }
 
-function filtrar(tipo){
-    tipoRanking = tipo
-    modo = "vendedores"
-    document.getElementById("funilImg").style.display = "none"
-    ordenar()
+function loadFunilLojas(btn){
+    mode = "funil";
+    currentTipo = "faturado";
+    toggle(btn);
+    updateDisplay();
 }
 
-document.getElementById("search").addEventListener("keyup", function(){
-    const v = this.value.toLowerCase()
+function toggle(btn){
+    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+}
 
-    if(modo === "funil"){
-        renderFunil(dadosFunil.filter(d => d.nome.toLowerCase().includes(v)))
-    } else {
-        renderVendedores(dadosVendedores.filter(d => d.nome.toLowerCase().includes(v)))
-    }
-})
-
+document.getElementById('searchInput').addEventListener('input', e=>{
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.rank-item').forEach(item=>{
+        item.style.display = item.innerText.toLowerCase().includes(term) ? 'flex' : 'none';
+    });
+});
 </script>
 
 </body>
